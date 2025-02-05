@@ -2,16 +2,26 @@ from collections import defaultdict
 from typing import Dict, Tuple
 
 import csv
+import configparser
 import logging
+
+configuration = configparser.ConfigParser()
+configuration.read('config.ini')
+
+PROTOCOLS_FILE = configuration['files']['protocols_file']
+FLOW_LOGS_FILE = configuration['files']['flow_logs_file']
+LOOKUP_TABLE_FILE = configuration['files']['lookup_table_file']
+TAG_COUNT_FILE = configuration['files']['tag_count_file']
+PORT_PROTOCOL_COUNT_FILE = configuration['files']['port_protocol_count_file']
 
 protocols: Dict[int, str] = {}
 lookup_table: Dict[Tuple[int, str], str] = {}
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s : %(message)s')
 
-def loading_protocols(file: str):
 
-    logging.info(f"Loading the protocols.csv file")
+def loading_protocols(file: str):
+    logging.info(f"Loading the {PROTOCOLS_FILE} file")
     try:
         with open(file, 'r') as protocol_file:
             csv_reader = csv.DictReader(protocol_file)
@@ -19,12 +29,12 @@ def loading_protocols(file: str):
                 protocols[int(csv_row['protocol_number'])] = csv_row['protocol_name']
 
     except FileNotFoundError:
-        logging.error(f"Could not find the protocols.csv file")
+        logging.error(f"Could not find the {PROTOCOLS_FILE} file")
         raise
 
-def generate_lookup_table(file: str):
 
-    logging.info(f"Generating the lookup table from lookup_table.csv")
+def generate_lookup_table(file: str):
+    logging.info(f"Generating the lookup table from {LOOKUP_TABLE_FILE}")
     try:
         with open(file, 'r') as lookup_file:
             csv_reader = csv.DictReader(lookup_file)
@@ -33,8 +43,9 @@ def generate_lookup_table(file: str):
                 lookup_table[lookup_value] = csv_row['tag'] 
 
     except FileNotFoundError:
-        logging.error(f"Could not find the lookup_table.csv file")
+        logging.error(f"Could not find the {LOOKUP_TABLE_FILE} file")
         raise
+
 
 def generate_logs(file: str):
     tag_count = defaultdict(int)
@@ -58,32 +69,34 @@ def generate_logs(file: str):
                 protocol_count[dest_protocol] += 1
 
     except FileNotFoundError:
-        logging.error(f"Could not find the flowlog.txt file")
+        logging.error(f"Could not find the {FLOW_LOGS_FILE} file")
         raise
 
     return tag_count, protocol_count
+
+
 def save_data_to_file(tag_count: Dict[str, int], protocol_count: Dict[Tuple[int, str], int]):
-    logging.info(f"Saving data to tag_count_output.txt and port_protocol_count_output.txt")
+    logging.info(f"Saving data to {TAG_COUNT_FILE }and {PORT_PROTOCOL_COUNT_FILE}")
     try:
-        with open('tag_count_output.csv','w') as data_file:
+        with open(TAG_COUNT_FILE,'w') as data_file:
             data_file.write("tag,count\n")
             for tag, count in tag_count.items():
                 data_file.write(f"{tag},{count}\n")
 
-        with open("port_protocol_count_output.csv", 'w') as data_file:
+        with open(PORT_PROTOCOL_COUNT_FILE, 'w') as data_file:
             data_file.write("port,portocol,count\n")
             for (port, protocol), count in protocol_count.items():
                 data_file.write(f"{port},{protocol},{count}\n")
 
     except Exception as e:
-        logging.error(f"Could not find the flowlog.txt file: {e}")
+        logging.error(f"Could not find the {FLOW_LOGS_FILE} file: {e}")
         raise
 
 def main():
     try:
-        loading_protocols('protocols.csv')
-        generate_lookup_table('lookup_table.csv')
-        tag_count, protocol_count = generate_logs('flowlogs.txt')
+        loading_protocols(PROTOCOLS_FILE)
+        generate_lookup_table(LOOKUP_TABLE_FILE)
+        tag_count, protocol_count = generate_logs(FLOW_LOGS_FILE)
         save_data_to_file(tag_count, protocol_count)
 
     except Exception as e:
