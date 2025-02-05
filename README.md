@@ -1,10 +1,9 @@
-# Log Parser - Illumio Take Home Assessement Summer 2025
+# Log Parser 
 
-## Problem
+## Problem Statement
 Write a program that can parse a file containing [flow log data](/flowlogs.txt) and maps each row to a tag based on a [lookup table](/lookup_table.csv)
 1. The program should generate an [tag count output file](/tag_count.csv)  containing the count of matches for each tag
 2. The program should generate an [port/protocol combination output file](/port_protocol_count.csv) containing the count of matches for each port/protocol combination 
-
 
 ## Assumptions
 
@@ -67,8 +66,18 @@ To run the unit test file use the following command:
 ```
 python -m unittest test_log_parser.py
 ```
+The following tests are designed to test the application:
 
-## Given Data Information
+1. Test to check if data can be correctly written to [protocols](/protocols.csv) file
+2. Test to check if file not found test works correctly i.e it throws an error for [protocols](/protocols.csv) file
+3. Test to check if incorrect data throws the value error and is handled correctly for [protocols](/protocols.csv) file
+4. Test to check if data can be correctly written to lookup_table file
+5. Test to check if file not found test works correctly i.e it throws an error for [lookup_table](/lookup_table.csv) file
+6. Test to check if incorrect data throws the value error and is handled correctly for [lookup_table](/lookup_table.csv) file
+7. Test to check if the logs are correctly generated onto the [flowlogs](/flowlogs.txt) file
+8. Test to check if the data gets saved correctly to [tag_count.csv](/tag_count.csv) and [port_protocol_count.csv](/port_protocol_count.csv).
+
+## Data Analysis
 1. The data in the file `lookup_table.csv` is in the below format
 
 ```
@@ -79,7 +88,15 @@ dstport,protocol,tag
 31,udp,SV_P3
 443,tcp,sv_P2
 ```
-2. The data in the file `flowlogs.txt` is in the AWS VPC flow logs format with the only version 2 supported
+
+`dstport`: destination protocol
+
+`protocol`: type of protocol (eg: tcp, udp, icmp, etc..)
+
+`tag`: tag identifiers mapped to the protocol
+
+
+2. The data in the file `flowlogs.txt` is in the AWS VPC flow logs format with only version 2 supported
 
 Reference: https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html
 

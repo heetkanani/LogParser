@@ -72,6 +72,8 @@ class TestLogParser(unittest.TestCase):
         self.assertEqual(port_protocol_counts[(53, 'udp')], 1)
         self.assertEqual(port_protocol_counts[(8080, 'tcp')], 1)
 
+
+    # Test to check if the data gets saved correctly
     def test_save_data_to_file(self):
         tag_count = {
             'untagged': 8,
