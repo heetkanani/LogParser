@@ -120,7 +120,7 @@ def save_data_to_file(tag_count: Dict[str, int], protocol_count: Dict[Tuple[int,
     Raises:
         Exception: If the execution is interrupted then the exception is thrown.
     """
-    logging.info(f"Saving data to {TAG_COUNT_FILE }and {PORT_PROTOCOL_COUNT_FILE}")
+    logging.info(f"Saving data to {TAG_COUNT_FILE } and {PORT_PROTOCOL_COUNT_FILE}")
     try:
         with open(TAG_COUNT_FILE,'w') as data_file:
             data_file.write("tag,count\n")
@@ -128,7 +128,7 @@ def save_data_to_file(tag_count: Dict[str, int], protocol_count: Dict[Tuple[int,
                 data_file.write(f"{tag},{count}\n")
 
         with open(PORT_PROTOCOL_COUNT_FILE, 'w') as data_file:
-            data_file.write("port,portocol,count\n")
+            data_file.write("port,protocol,count\n")
             for (port, protocol), count in protocol_count.items():
                 data_file.write(f"{port},{protocol},{count}\n")
 
