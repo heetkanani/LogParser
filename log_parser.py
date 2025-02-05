@@ -5,9 +5,11 @@ import csv
 import configparser
 import logging
 
+#Initializing the config.ini file
 configuration = configparser.ConfigParser()
 configuration.read('config.ini')
 
+#Getting the file names from the config file
 PROTOCOLS_FILE = configuration['files']['protocols_file']
 FLOW_LOGS_FILE = configuration['files']['flow_logs_file']
 LOOKUP_TABLE_FILE = configuration['files']['lookup_table_file']
@@ -17,10 +19,19 @@ PORT_PROTOCOL_COUNT_FILE = configuration['files']['port_protocol_count_file']
 protocols: Dict[int, str] = {}
 lookup_table: Dict[Tuple[int, str], str] = {}
 
+#Initiaizing the logging mechanism
 logging.basicConfig(level=logging.INFO, format='%(levelname)s : %(message)s')
 
-
 def loading_protocols(file: str):
+    """
+    Loads the data from the protocols.csv file.
+
+    Args:
+        file (str): the name of the csv file.
+    
+    Raises:
+        FileNotFoundError: if a specific file is not found then it will throw this error.
+    """
     logging.info(f"Loading the {PROTOCOLS_FILE} file")
     try:
         with open(file, 'r') as protocol_file:
@@ -34,6 +45,15 @@ def loading_protocols(file: str):
 
 
 def generate_lookup_table(file: str):
+    """
+    Reads the data from lookup_table.csv file.
+
+    Args:
+        file (str): the name of the csv file.
+    
+    Raises:
+        FileNotFoundError: if a specific file is not found then it will throw this error.
+    """
     logging.info(f"Generating the lookup table from {LOOKUP_TABLE_FILE}")
     try:
         with open(file, 'r') as lookup_file:
@@ -48,6 +68,20 @@ def generate_lookup_table(file: str):
 
 
 def generate_logs(file: str):
+    """
+    Reads the flowlog.txt file to calculate the tag count and port protocol count.
+
+    Args:
+        file (str): the name of the csv file.
+    
+    Returns:
+        Tuple[Dict[str, int], Dict[Tuple[int, str], int]]: 
+            - tags as keys and tag count as values.
+            - (destination port, protocol) as keys and port protocol count as values.
+    
+    Raises:
+        FileNotFoundError: if a specific file is not found then it will throw this error.
+    """
     tag_count = defaultdict(int)
     protocol_count = defaultdict(int)
 
@@ -76,6 +110,16 @@ def generate_logs(file: str):
 
 
 def save_data_to_file(tag_count: Dict[str, int], protocol_count: Dict[Tuple[int, str], int]):
+    """
+    Saves the generated count into the tag_count.csv and port_protocol_count.csv.
+
+    Args:
+        tag_count (Dict[str, int]): saving the tag counts.
+        protocol_count (Dict[Tuple[int, str], int]): saving the port protocol counts.
+    
+    Raises:
+        Exception: If the execution is interrupted then the exception is thrown.
+    """
     logging.info(f"Saving data to {TAG_COUNT_FILE }and {PORT_PROTOCOL_COUNT_FILE}")
     try:
         with open(TAG_COUNT_FILE,'w') as data_file:
@@ -93,6 +137,13 @@ def save_data_to_file(tag_count: Dict[str, int], protocol_count: Dict[Tuple[int,
         raise
 
 def main():
+    """
+    Main function that performes the operations like loading the data, generate the csv table and then
+    saving the data into the specified files.
+
+    Raises:
+        Exception: If the execution is interrupted then the exception is thrown.
+    """
     try:
         loading_protocols(PROTOCOLS_FILE)
         generate_lookup_table(LOOKUP_TABLE_FILE)
