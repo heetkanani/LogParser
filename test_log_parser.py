@@ -1,6 +1,4 @@
 import unittest
-from unittest.mock import MagicMock
-
 from log_parser import (loading_protocols, generate_lookup_table, generate_logs, save_data_to_file,protocols, lookup_table)
 
 class TestLogParser(unittest.TestCase):
