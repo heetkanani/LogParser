@@ -2,17 +2,24 @@ from collections import defaultdict
 from typing import Dict, Tuple
 
 import csv
+import logging
 
 protocols: Dict[int, str] = {}
 lookup_table: Dict[Tuple[int, str], str] = {}
 
+logging.basicConfig(level=logging.INFO, format='%(levelname)s : %(message)s')
+
 def loading_protocols(file: str):
+
+    logging.info(f"Loading the protocols.csv file")
     with open(file, 'r') as protocol_file:
         csv_reader = csv.DictReader(protocol_file)
         for csv_row in csv_reader:
             protocols[int(csv_row['protocol_number'])] = csv_row['protocol_name']
 
 def generate_lookup_table(file: str):
+
+    logging.info(f"Generating the lookup table from lookup_table.csv")
     with open(file, 'r') as lookup_file:
         csv_reader = csv.DictReader(lookup_file)
         for csv_row in csv_reader:
@@ -23,6 +30,7 @@ def generate_logs(file: str):
     tag_count = defaultdict(int)
     protocol_count = defaultdict(int)
 
+    logging.info(f"Generating logs and calculating the count")
     with open(file, 'r') as log_file:
         for entry in log_file:
             value = entry.split()
@@ -41,12 +49,13 @@ def generate_logs(file: str):
 
     return tag_count, protocol_count
 def save_data_to_file(tag_count: Dict[str, int], protocol_count: Dict[Tuple[int, str], int]):
-    with open('tag_count_output.txt','w') as data_file:
+    logging.info(f"Saving data to tag_count_output.txt and port_protocol_count_output.txt")
+    with open('tag_count_output.csv','w') as data_file:
         data_file.write("tag,count\n")
         for tag, count in tag_count.items():
             data_file.write(f"{tag},{count}\n")
 
-    with open("port_protocol_count_output.txt", 'w') as data_file:
+    with open("port_protocol_count_output.csv", 'w') as data_file:
         data_file.write("port,portocol,count\n")
         for (port, protocol), count in protocol_count.items():
             data_file.write(f"{port},{protocol},{count}\n")
