@@ -2,7 +2,6 @@ import unittest
 from log_parser import (loading_protocols, generate_lookup_table, generate_logs, save_data_to_file,protocols, lookup_table)
 
 class TestLogParser(unittest.TestCase):
-
     #setup test to clear if there is data in files
     def setUp(self):
         protocols.clear()

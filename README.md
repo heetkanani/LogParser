@@ -1,10 +1,10 @@
 # Log Parser - Illumio Take Home Assessement Summer 2025
 
 ## Problem
-
 Write a program that can parse a file containing [flow log data](/flowlogs.txt) and maps each row to a tag based on a [lookup table](/lookup_table.csv)
 1. The program should generate an [tag count output file](/tag_count.csv)  containing the count of matches for each tag
 2. The program should generate an [port/protocol combination output file](/port_protocol_count.csv) containing the count of matches for each port/protocol combination 
+
 
 ## Assumptions
 

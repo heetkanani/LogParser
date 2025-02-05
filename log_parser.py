@@ -154,6 +154,7 @@ def main():
         logging.error(f"Could not run the program correctly: {e}")
         raise
 
+
 if __name__ == '__main__':
     main()
 
